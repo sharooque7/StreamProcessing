@@ -4,8 +4,10 @@ package org.ainzson.RingFrameStream;
 import com.google.gson.annotations.SerializedName;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
 @Getter
 @Setter
@@ -19,7 +21,7 @@ public class RingFrame40StreamDTO {
     private String assetId;
 
     @SerializedName("ts")
-    private Long ts;
+    private Timestamp ts;
 
     @SerializedName("departmentid")
     private String departmentId;
@@ -34,7 +36,7 @@ public class RingFrame40StreamDTO {
     private Integer shiftNumber;
 
     @SerializedName("shiftdate")
-    private Long shiftDate;
+    private Timestamp shiftDate;
 
     @SerializedName("shiftmonth")
     private Integer shiftMonth;

@@ -1,5 +1,6 @@
 package org.ainzson.RingFrameStream;
 
+import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.KafkaException;
@@ -7,6 +8,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.KStream;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
@@ -16,7 +18,9 @@ import org.apache.kafka.streams.kstream.Produced;
 
 @Slf4j
 public class RingFrameStreamProcessing {
-    private final static Gson gson = new Gson();
+    private final static Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Timestamp.class,new EpochToTimestampTypeAdapter())
+            .create();
     private  final Map<String,RingFrame40StreamDTO> cached= new HashMap<>();
 
     public Properties setProperties() {
@@ -45,7 +49,7 @@ public class RingFrameStreamProcessing {
                         .collect(Collectors.toList());
             });
 
-            transformedStream.map((key,value)->instanceCalculation(key,value));
+            transformedStream.map(this::instanceCalculation);
 
 
             transformedStream.to("pop", Produced.with(Serdes.String(), new RingFrame40Serde()));
