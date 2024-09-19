@@ -1,4 +1,4 @@
-package org.ainzson.RingFrameStream;
+package org.ainzson.schema;
 
 
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +7,6 @@ import lombok.*;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
 
 @Getter
 @Setter

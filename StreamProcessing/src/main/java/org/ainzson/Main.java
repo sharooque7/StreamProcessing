@@ -1,18 +1,13 @@
 package org.ainzson;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.ainzson.RingFrameStream.EpochToTimestampTypeAdapter;
-import org.ainzson.RingFrameStream.RingFrame40StreamDTO;
-import org.ainzson.RingFrameStream.RingFrameStreamProcessing;
-
-import java.sql.Timestamp;
-import java.util.Arrays;
+import org.ainzson.streamprocessor.RingFrameStreamProcessing;
+import org.ainzson.config.RedisConfig;
 
 public class Main {
-    public static void main(String[] args) {
-        RingFrameStreamProcessing ringFrameStreamProcessing = new RingFrameStreamProcessing();
-        ringFrameStreamProcessing.initializeRingframeStream();
+
+    public static void main(String[] args) throws Exception {
+        RingFrameStreamProcessing ringFrameStreamProcessing = new RingFrameStreamProcessing(new RedisConfig().getJedis());
+        ringFrameStreamProcessing.initializeRingFrameStream();
 
 //        Gson gson = new GsonBuilder()
 //                .registerTypeAdapter(Timestamp.class, new EpochToTimestampTypeAdapter())  // Register adapter for long values (timestamps)

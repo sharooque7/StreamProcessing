@@ -1,6 +1,7 @@
-package org.ainzson.RingFrameStream;
+package org.ainzson.streamprocessor;
 
 import com.google.gson.Gson;
+import org.ainzson.schema.RingFrame40StreamDTO;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
