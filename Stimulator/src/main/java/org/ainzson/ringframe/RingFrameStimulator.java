@@ -3,6 +3,7 @@ package org.ainzson.ringframe;
 import com.taosdata.jdbc.TSDBDriver;
 import com.taosdata.jdbc.TSDBPreparedStatement;
 import lombok.extern.slf4j.Slf4j;
+
 import java.sql.DriverManager;
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class RingFrameStimulator {
     }
 
     public void pushToTd(Ringframe40 ringframe40) {
-        String jdbcUrl = "jdbc:TAOS://localhost:6030?user=root&password=taosdata";
+        String jdbcUrl = "jdbc:TAOS://192.168.1.4:6030?user=root&password=taosdata";
         Properties connProps = new Properties();
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_CHARSET, "UTF-8");
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_LOCALE, "en_US.UTF-8");

@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  stimulator:
+    build:
+      context: ./Stimulator  # Ensure the context is set to the directory containing the Dockerfile
+      dockerfile: Dockerfile  # Specify the Dockerfile name if it's not the default
+    ports:
+      - "8081:8080"  # Adjust host port to avoid conflict with the stream service
+    environment:
+      - SOME_ENV_VAR=value  # Replace or add any necessary environment variables
+    volumes:
+      - ./data:/app/data  # Example volume, adjust based on your requirements
+
+  stream:
+    build:
+      context: ./StreamProcessing  # Ensure the context is set to the directory containing the Dockerfile
+      dockerfile: Dockerfile  # Specify the Dockerfile name if it's not the default
+    ports:
+      - "8082:8080"  # Adjust host port to avoid conflict with the stimulator service
+    environment:
+      - SOME_ENV_VAR=value  # Replace or add any necessary environment variables
+    volumes:
+      - ./data:/app/data  # Example volume, adjust based on your requirements
