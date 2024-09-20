@@ -13,8 +13,8 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        RingFrameStreamProcessing ringFrameStreamProcessing = new RingFrameStreamProcessing(new RedisConfig().getJedis());
-        ringFrameStreamProcessing.initializeRingFrameStream();
+        RingFrameStreamProcessing ringFrameStreamProcessing = new RingFrameStreamProcessing();
+        ringFrameStreamProcessing.initializeRingframeStream();
 
 //        Gson gson = new GsonBuilder()
 //                .registerTypeAdapter(Timestamp.class, new EpochToTimestampTypeAdapter())  // Register adapter for long values (timestamps)
