@@ -12,6 +12,7 @@ import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 
+import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -53,7 +54,7 @@ public class RingFrameStreamProcessing {
             KStream<String, RingFrame40StreamDTO> stream = builder.stream("tdengine-rawdata-ringframe_40", Consumed.with(Serdes.String(),new RingFrame40Serde()));
 
             KStream<String, RingFrame40StreamDTO> transformedStream = stream.flatMap((key, value) -> {
-                RingFrame40StreamDTO[] ringFrame40SArray = gson.fromJson(value, RingFrame40StreamDTO[].class);
+                RingFrame40StreamDTO[] ringFrame40SArray = gson.fromJson(String.valueOf(value), RingFrame40StreamDTO[].class);
                 return Arrays.stream(ringFrame40SArray)
                         .map(ringFrame -> new KeyValue<>(ringFrame.getAssetId(), ringFrame))
                         .collect(Collectors.toList());
@@ -105,7 +106,9 @@ public class RingFrameStreamProcessing {
         }
         else {
             Map<String, Object> current = ringFrame40StreamDTO.toMap();
-            Map<String, Object> previous = gson.fromJson(cachedData, RingFrame40StreamDTO.class).toMap();
+            RingFrame40StreamDTO[] ringFrame40StreamDTOS = gson.fromJson((Reader) List.of(cachedData), RingFrame40StreamDTO[].class);
+            Map<String, Object> previous = ringFrame40StreamDTOS[0].toMap();
+
 
             for (Map.Entry<String, Object> entry : current.entrySet()) {
                 String k = entry.getKey();
