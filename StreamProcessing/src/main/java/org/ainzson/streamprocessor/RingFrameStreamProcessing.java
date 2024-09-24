@@ -1,34 +1,31 @@
 package org.ainzson.streamprocessor;
 
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.ainzson.convertors.RingFrame40Serde;
 import org.ainzson.schema.RingFrame40StreamDTO;
-import org.ainzson.utils.EpochToTimestampTypeAdapter;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.KStream;
 
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
-import com.google.gson.Gson;
 import org.apache.kafka.streams.kstream.Produced;
 
 @Slf4j
 public class RingFrameStreamProcessing {
-    private final static Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Timestamp.class,new EpochToTimestampTypeAdapter())
-            .create();
+    private  final ObjectMapper objectMapper = new ObjectMapper();
     private  final Map<String, RingFrame40StreamDTO> cached= new HashMap<>();
 
     public Properties setProperties() {
         Properties properties = new Properties();
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "ringframe40");
-        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "10.20.32.70:9092");
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
@@ -37,15 +34,20 @@ public class RingFrameStreamProcessing {
         return properties;
     }
 
-    public void initializeRingframeStream() {
+    public void initializeRingFrameStream() {
         try {
 
             final StreamsBuilder builder = new StreamsBuilder();
 
-            KStream<String, String> stream = builder.stream("tdengine-rawdata-ringframe_40");
+            KStream<String, String> stream = builder.stream("tdengine-test-ringframe_40");
 
             KStream<String, RingFrame40StreamDTO> transformedStream = stream.flatMap((key, value) -> {
-                RingFrame40StreamDTO[] ringframe40SArray = gson.fromJson(value, RingFrame40StreamDTO[].class);
+                RingFrame40StreamDTO[] ringframe40SArray = null;
+                try {
+                    ringframe40SArray = objectMapper.readValue(value, RingFrame40StreamDTO[].class);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
                 return Arrays.stream(ringframe40SArray)
                         .map(ringframe -> new KeyValue<>(ringframe.getAssetId(), ringframe))
                         .collect(Collectors.toList());

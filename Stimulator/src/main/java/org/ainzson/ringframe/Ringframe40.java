@@ -3,9 +3,8 @@ package org.ainzson.ringframe;
 import lombok.*;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 @Getter
@@ -16,7 +15,7 @@ import java.util.Random;
 public class Ringframe40 {
 
     private String assetId;
-    private Timestamp ts;
+    private String ts;
     private String departmentId;
     private String siteId;
     private String machineId;
@@ -70,7 +69,7 @@ public class Ringframe40 {
     }
     public void generateRandomDate() {
         Random random = new Random();
-        this.ts = new Timestamp(System.currentTimeMillis());
+        this.ts = DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.of("UTC")).format(Instant.ofEpochMilli(System.currentTimeMillis()));
         this.shiftDate = new Timestamp(System.currentTimeMillis());
 
         this.shiftNumber = 1;

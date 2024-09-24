@@ -26,17 +26,17 @@ public class RingFrameStimulator {
     }
 
     public void pushToTd(Ringframe40 ringframe40) {
-        String jdbcUrl = "jdbc:TAOS://192.168.1.4:6030?user=root&password=taosdata";
+        String jdbcUrl = "jdbc:TAOS://10.20.32.70:6030?user=root&password=taosdata";
         Properties connProps = new Properties();
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_CHARSET, "UTF-8");
-        connProps.setProperty(TSDBDriver.PROPERTY_KEY_LOCALE, "en_US.UTF-8");
+        connProps.setProperty(TSDBDriver.PROPERTY_KEY_LOCALE, "en-US.UTF+5:30");
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_TIME_ZONE, "Asia/Kolkata");
 
         try {
             Connection connection = DriverManager.getConnection(jdbcUrl, connProps);
 
             String subTable = ringframe40.getAssetId().trim();
-            String superTable = "rawdata.ringframe_40";
+            String superTable = "test.ringframe_40";
 
             String tdSql = "INSERT INTO " + subTable + " USING " + superTable + " TAGS (?,?)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?)";
@@ -93,7 +93,7 @@ public class RingFrameStimulator {
             );
 
             try (TSDBPreparedStatement preparedStatement = connection.prepareStatement(tdSql).unwrap(TSDBPreparedStatement.class);) {
-                preparedStatement.execute("USE rawdata");
+                preparedStatement.execute("USE test");
                 preparedStatement.execute(query);
 
                 log.info("Inserted Successfully");

@@ -1,10 +1,10 @@
 package org.ainzson.schema;
 
-
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
+import org.ainzson.utils.EpochToISO8601Deserializer;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,140 +15,151 @@ import java.util.Map;
 @Data
 public class RingFrame40StreamDTO {
 
+    public static class Tags {
+        @JsonProperty("location")
+        private String location;
+        @JsonProperty("groupid")
+        private String groupId;
+    }
 
-    @SerializedName("assetid")
+    @JsonProperty("assetid")
     private String assetId;
 
-    @SerializedName("ts")
-    private Timestamp ts;
+    @JsonProperty("tags")
+    private Tags tags;
 
-    @SerializedName("departmentid")
+    @JsonProperty("ts")
+    @JsonDeserialize(using = EpochToISO8601Deserializer.class)
+    private String ts;
+
+    @JsonProperty("departmentid")
     private String departmentId;
 
-    @SerializedName("siteid")
+    @JsonProperty("siteid")
     private String siteId;
 
-    @SerializedName("machineid")
+    @JsonProperty("machineid")
     private String machineId;
 
-    @SerializedName("shiftnumber")
+    @JsonProperty("shiftnumber")
     private Integer shiftNumber;
 
-    @SerializedName("shiftdate")
-    private Timestamp shiftDate;
+    @JsonProperty("shiftdate")
+    @JsonDeserialize(using = EpochToISO8601Deserializer.class)
+    private String shiftDate;
 
-    @SerializedName("shiftmonth")
+    @JsonProperty("shiftmonth")
     private Integer shiftMonth;
 
-    @SerializedName("shiftyear")
+    @JsonProperty("shiftyear")
     private Integer shiftYear;
 
-    @SerializedName("shifthour")
+    @JsonProperty("shifthour")
     private Integer shiftHour;
 
-    @SerializedName("shiftminute")
+    @JsonProperty("shiftminute")
     private Integer shiftMinute;
 
-    @SerializedName("productioninhanks")
+    @JsonProperty("productioninhanks")
     private Double productionInHanks;
 
-    @SerializedName("productioninmeters")
+    @JsonProperty("productioninmeters")
     private Double productionInMeters;
 
-    @SerializedName("weightperspindle")
+    @JsonProperty("weightperspindle")
     private Double weightPerSpindle;
 
-    @SerializedName("noofdoffs")
+    @JsonProperty("noofdoffs")
     private Double noOfDoffs;
 
-    @SerializedName("airconsumption")
+    @JsonProperty("airconsumption")
     private Double airConsumption;
 
-    @SerializedName("runtimehour")
+    @JsonProperty("runtimehour")
     private Double runTimeHour;
 
-    @SerializedName("runtimeminute")
+    @JsonProperty("runtimeminute")
     private Double runTimeMinute;
 
-    @SerializedName("idletimehour")
+    @JsonProperty("idletimehour")
     private Double idleTimeHour;
 
-    @SerializedName("idletimeminute")
+    @JsonProperty("idletimeminute")
     private Double idleTimeMinute;
 
-    @SerializedName("powerfailtimehour")
+    @JsonProperty("powerfailtimehour")
     private Double powerFailTimeHour;
 
-    @SerializedName("powerfailtimeminute")
+    @JsonProperty("powerfailtimeminute")
     private Double powerFailTimeMinute;
 
-    @SerializedName("dofftimehour")
+    @JsonProperty("dofftimehour")
     private Double doffTimeHour;
 
-    @SerializedName("dofftimeminute")
+    @JsonProperty("dofftimeminute")
     private Double doffTimeMinute;
 
-    @SerializedName("counts")
+    @JsonProperty("counts")
     private Double counts;
 
-    @SerializedName("averagetpi")
+    @JsonProperty("averagetpi")
     private Double averageTpi;
 
-    @SerializedName("averagespindlespeed")
+    @JsonProperty("averagespindlespeed")
     private Double averageSpindleSpeed;
 
-    @SerializedName("averagedelivery")
+    @JsonProperty("averagedelivery")
     private Double averageDelivery;
 
-    @SerializedName("voltageavg")
+    @JsonProperty("voltageavg")
     private Double voltageAvg;
 
-    @SerializedName("currentavg")
+    @JsonProperty("currentavg")
     private Double currentAvg;
 
-    @SerializedName("powerfactor")
+    @JsonProperty("powerfactor")
     private Double powerFactor;
 
-    @SerializedName("frequency")
+    @JsonProperty("frequency")
     private Double frequency;
 
-    @SerializedName("totalactivepower")
+    @JsonProperty("totalactivepower")
     private Double totalActivePower;
 
-    @SerializedName("totalkva")
+    @JsonProperty("totalkva")
     private Double totalKva;
 
-    @SerializedName("totalkvar")
+    @JsonProperty("totalkvar")
     private Double totalKvar;
 
-    @SerializedName("totalkwh")
+    @JsonProperty("totalkwh")
     private Double totalKwh;
 
-    @SerializedName("totalkvah")
+    @JsonProperty("totalkvah")
     private Double totalKvah;
 
-    @SerializedName("totalkvarh")
+    @JsonProperty("totalkvarh")
     private Double totalKvarh;
 
-    @SerializedName("overallmachineutilization")
+    @JsonProperty("overallmachineutilization")
     private Double overallMachineUtilization;
 
-    @SerializedName("productionefficiency")
+    @JsonProperty("productionefficiency")
     private Double productionEfficiency;
 
-    @SerializedName("productionkg")
+    @JsonProperty("productionkg")
     private Double productionKg;
 
-    @SerializedName("ukg")
+    @JsonProperty("ukg")
     private Double ukg;
 
-    @SerializedName("gpss")
+    @JsonProperty("gpss")
     private Double gpss;
 
-    @SerializedName("location")
+    @JsonProperty("location")
     private String location;
 
-    @SerializedName("groupid")
+    @JsonProperty("groupid")
     private Integer groupId;
 
 
