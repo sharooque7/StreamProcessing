@@ -56,7 +56,7 @@ public class RingFrameStreamProcessing {
             transformedStream.map(this::instanceCalculation);
 
 
-            transformedStream.to("pop", Produced.with(Serdes.String(), new RingFrame40Serde()));
+            transformedStream.to("ringframe_40", Produced.with(Serdes.String(), new RingFrame40Serde()));
 
 
             final Topology topology = builder.build();
