@@ -11,11 +11,11 @@ public class Stimulator {
     public static void main(String[] args) {
 //        System.out.println(System.getProperty("java.library.path"));
 //
-//        RingFrameStimulator simulator = new RingFrameStimulator();
-//        simulator.stimulator();
+        RingFrameStimulator simulator = new RingFrameStimulator();
+        simulator.stimulator();
 
-        new TemperatureStimulator().stimulator();
-        new VibrationStimulator().stimulator();
-        new PressureStimulator().stimulator();
+//        new TemperatureStimulator().stimulator();
+//        new VibrationStimulator().stimulator();
+//        new PressureStimulator().stimulator();
     }
 }

@@ -79,7 +79,8 @@ public class RuleEngineStream {
         final StreamsBuilder builder = new StreamsBuilder();
 
         KStream<String, String> stream1 = builder.stream("tdengine-rawdata-temperature",Consumed.with(Serdes.String(),Serdes.String()));
-//        KStream<String,String> stream2 = builder.stream("tdengine-rawdata-pressure");
+        KStream<String,String> stream2 = builder.stream("tdengine-rawdata-pressure");
+
 
         KStream<String,Temperature>  temperatureKStream = stream1.map((key,value)->{
             try {
