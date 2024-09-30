@@ -1,29 +1,22 @@
 package org.ainzson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        Space ringframe40 = new Space(1,"asset-123", (long) 9.999);
+        String json = "{\"shiftdate\":1727113551,\"points\":9.8,\"name\":\"sharooque\",\"ts\":1726820147775}";
 
-        // Serialize to a file
-        FileOutputStream fileOut = new FileOutputStream("ringframe.ser");
-        ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(fileOut));
-        out.writeObject(ringframe40);
-        out.close();
-        fileOut.close();
-        System.out.println("Serialized data is saved in ringframe.ser");
+        ObjectMapper objectMapper = new ObjectMapper();
+        RingFrame data = objectMapper.readValue(json, RingFrame.class);
 
-        // Deserialize from a file
-        FileInputStream fileIn = new FileInputStream("ringframe.ser");
-        ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(fileIn));
-        Space deserialized = (Space) in.readObject();
-        in.close();
-        fileIn.close();
-
-        System.out.println("Deserialized Object: " + deserialized.getSpaceStation());
+        System.out.println("Shift Date in ISO 8601 format: " + data.getShiftDate());
+        System.out.println("Shift Date in ISO 8601 format: " + data.getTs());
+        System.out.println("Shift Date in ISO 8601 format: " + data.getName());
+        System.out.println("Shift Date in ISO 8601 format: " + data.getPoints());
 
     }
 }
