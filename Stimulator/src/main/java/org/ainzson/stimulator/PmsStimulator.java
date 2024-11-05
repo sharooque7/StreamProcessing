@@ -89,7 +89,7 @@ public class PmsStimulator {
             setValues(preparedStatement, machineStatus);
 
             preparedStatement.execute();
-            log.info("Data inserted successfully into sub-table: {}", subTable);
+            log.info("Data inserted successfully into sub-tables: {}", subTable);
         }
     }
 
