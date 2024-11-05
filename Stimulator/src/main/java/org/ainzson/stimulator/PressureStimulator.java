@@ -20,7 +20,7 @@ public class PressureStimulator {
 
     private final List<Pressure> sensors = new ArrayList<>();
     private final String superTable = "rawdata.pressure";
-    private final int NUMBER_OF_ASSET = 3;
+    private final int NUMBER_OF_ASSET = 1;
     private final ScheduledExecutorService executor;
 
     public PressureStimulator() {

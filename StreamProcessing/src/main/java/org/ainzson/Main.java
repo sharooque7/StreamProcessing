@@ -1,15 +1,17 @@
 package org.ainzson;
 
-import org.ainzson.streamprocessor.RuleEngineStream;
+import org.ainzson.streamprocessor.PmsEventStream;
+import org.ainzson.streamprocessor.XMallStatefulTransaction;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
-//        RingFrameStreamProcessing ringFrameStreamProcessing = new RingFrameStreamProcessing();
-//        ringFrameStreamProcessing.initializeRingframeStream();
-//
-        new RuleEngineStream().TemperatureStreamProcessor();
 
+//        new RuleEngineStream().TemperatureStreamProcessor();
+//        new ConditionalMonitoringProcess().conditionalMonitoringProcessor();
 
+//        new XMallStatefulTransaction().xMallStream();
+
+        new PmsEventStream().PmsEventStreaming();
     }
 }

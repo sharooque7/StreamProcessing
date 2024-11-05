@@ -1,9 +1,12 @@
 package org.ainzson.stimulator;
 
+import com.google.common.collect.Maps;
 import com.taosdata.jdbc.TSDBDriver;
 import com.taosdata.jdbc.ws.TSWSPreparedStatement;
 import lombok.extern.slf4j.Slf4j;
 import org.ainzson.Sensors.Temperature;
+
+import java.sql.ResultSet;
 import java.text.MessageFormat;
 
 
@@ -12,6 +15,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,7 +26,9 @@ public class TemperatureStimulator {
     private final List<Temperature> sensors = new ArrayList<>();
     private final String superTable = "rawdata.temperature";
     private final String subTable = "temperaturesensor";
-    private final int NUMBER_OF_ASSET = 3;
+    private final int NUMBER_OF_ASSET = 1;
+    protected Map<String, String> columnType = Maps.newHashMap();
+
     private final ScheduledExecutorService executor;
 
     public TemperatureStimulator() {
@@ -38,7 +44,7 @@ public class TemperatureStimulator {
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_CHARSET, "UTF-8");
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_LOCALE, "en_US.UTF-8");
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_TIME_ZONE, "Asia/Kolkata");
-        String jdbcUrl = "jdbc:TAOS-RS://" + "localhost" + ":6041/?user=root&password=taosdata&batchfetch=true";
+        String jdbcUrl = "jdbc:TAOS-RS://" + "13.234.108.231" + ":6041/?user=root&password=taosdata&batchfetch=true";
 
         try (Connection connection = DriverManager.getConnection(jdbcUrl,connProps)) {
 
@@ -46,7 +52,20 @@ public class TemperatureStimulator {
             String query = getQuery(temperature);
             try (TSWSPreparedStatement preparedStatement = connection.prepareStatement("").unwrap(TSWSPreparedStatement.class)) {
                 preparedStatement.execute("USE rawdata");
-                preparedStatement.execute(query);
+//                preparedStatement.execute(query);
+
+                ResultSet resultSet = preparedStatement.executeQuery("describe rawdata.current_stream_output_stb");
+                while (resultSet.next()) {
+                    String name = resultSet.getString(1);
+                    System.out.println(resultSet.getString(1));
+                    System.out.println(resultSet.getString(3));
+                    System.out.println(resultSet.getString(2));
+                    System.out.println(resultSet.getString(4));
+                    columnType.put(name,resultSet.getString(4));
+                }
+                for (Map.Entry<String, String> entry : columnType.entrySet()) {
+                    System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+                }
                 log.info("Data inserted successfully into {} table.", subTable);
 
             } catch (SQLException sqlException) {
