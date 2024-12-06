@@ -21,6 +21,9 @@ public class Stimulator {
 
     public static void main(String[] args) {
 
+//        new PressureStimulator().stimulator();
+//        new TemperatureStimulator().stimulator();
+//        new VibrationStimulator().stimulator();
         new PmsStimulator().stimulator();
     }
 }

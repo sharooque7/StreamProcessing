@@ -24,17 +24,17 @@ import static org.apache.kafka.streams.kstream.Printed.toSysOut;
 
 @Slf4j
 public class PmsEventStream {
-    private final static String BOOTSTRAP_SERVER = "localhost:9092";
+    private final static String BOOTSTRAP_SERVER = "127.0.0.1:9092";
     private final static String APP_ID = "PMS_EVENT";
-    private final static String SOURCE_TOPIC = "tdengine-normalized-normalized_pms";
+    private final static String SOURCE_TOPIC = "_normalized_normalized_pms";
     
     public Properties properties() {
         Properties properties = new Properties();
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,BOOTSTRAP_SERVER);
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG,APP_ID);
-        properties.put(StreamsConfig.RETRY_BACKOFF_MS_CONFIG, 1000);
-        properties.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 5000); // 5 seconds
-        properties.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 5000);  // Commit every 5 seconds
+        properties.put(StreamsConfig.RETRY_BACKOFF_MS_CONFIG, 20000);
+        properties.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 20000); // 5 seconds
+        properties.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 20000);  // Commit every 5 seconds
 
         return  properties;
     }
@@ -73,7 +73,7 @@ public class PmsEventStream {
     private Topology getTopology() {
         final StreamsBuilder builder = new StreamsBuilder();
 
-        KStream<String,MachineStatus> ks0 = builder.stream("tdengine-normalized-normalized_pms", Consumed.with(Serdes.String(), JsonSerdes.MachineStatusSerde())
+        KStream<String,MachineStatus> ks0 = builder.stream("_normalized_normalized_pms", Consumed.with(Serdes.String(), JsonSerdes.MachineStatusSerde())
                 .withName("Event_PMS_Stream")
                 .withOffsetResetPolicy(Topology.AutoOffsetReset.LATEST));
 
