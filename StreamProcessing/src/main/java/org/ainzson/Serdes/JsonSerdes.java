@@ -1,5 +1,7 @@
 package org.ainzson.Serdes;
 
+import org.ainzson.models.pms.Availability;
+import org.ainzson.models.pms.Downtime;
 import org.ainzson.models.pms.MachineStatus;
 import org.ainzson.models.xmall.Transaction;
 import org.ainzson.models.xmall.TransactionKey;
@@ -52,6 +54,26 @@ public class JsonSerdes {
     }
     public final static class MachineStatusWrapSerde extends WrapSerde<MachineStatus> {
         private MachineStatusWrapSerde(Serializer<MachineStatus> serializer,Deserializer<MachineStatus> deserializer) {
+            super(serializer,deserializer);
+        }
+    }
+
+    public static DowntimeWrapSerde DowntimeStatusSerde() {
+        return new DowntimeWrapSerde(new JsonSerialization<>(),new JsonDeserialization<>(Downtime.class));
+    }
+    public final static class DowntimeWrapSerde extends WrapSerde<Downtime> {
+        private DowntimeWrapSerde(Serializer<Downtime> serializer,Deserializer<Downtime> deserializer) {
+            super(serializer,deserializer);
+        }
+    }
+
+
+    public static AvailabilityWrapSerde AvailabilitySerde() {
+        return new AvailabilityWrapSerde(new JsonSerialization<>(),new JsonDeserialization<>(Availability.class));
+    }
+
+    public final static class AvailabilityWrapSerde extends WrapSerde<Availability> {
+        private AvailabilityWrapSerde(Serializer<Availability> serializer,Deserializer<Availability> deserializer) {
             super(serializer,deserializer);
         }
     }

@@ -1,0 +1,40 @@
+{
+  "name": "MongoDBSinkConnectorQA",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "tasks.max": "3",
+    "topics": "ringframe_40,pop,events,availability,theoretical_parts,quality,performance",
+    "subscription.group.id": "QAMongoSinkConnector",
+    "connection.uri": "mongodb://admin:admin123@mongo:27017/",
+    "database": "data_pipeline_streaming",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+    "writemodel.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.ReplaceOneBusinessKeyStrategy",
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.PartialValueStrategy",
+    "document.id.strategy.partial.value.projection.list":"asset_id,start_datetime,ts,minute",
+    "document.id.strategy.partial.value.projection.type":"AllowList",
+
+    "transforms": "TimestampConverterStart,TimestampConverterEnd,CastDowntime,CaseShutdown",
+
+    "transforms.TimestampConverterStart.type": "org.apache.kafka.connect.transforms.TimestampConverter$Value",
+    "transforms.TimestampConverterStart.field": "start_datetime",
+    "transforms.TimestampConverterStart.format": "yyyy-MM-dd'T'HH:mm:ss",
+    "transforms.TimestampConverterStart.target.type": "Timestamp",
+
+    "transforms.TimestampConverterEnd.type": "org.apache.kafka.connect.transforms.TimestampConverter$Value",
+    "transforms.TimestampConverterEnd.field": "end_datetime",
+    "transforms.TimestampConverterEnd.format": "yyyy-MM-dd'T'HH:mm:ss",
+    "transforms.TimestampConverterEnd.target.type": "Timestamp",
+
+    "transforms.CastDowntime.type": "org.apache.kafka.connect.transforms.Cast$Value",
+    "transforms.CastDowntime.spec": "planned_downtime:boolean",
+
+    "transforms.CaseShutdown.type": "org.apache.kafka.connect.transforms.Cast$Value",
+    "transforms.CaseShutdown.spec": "planned_shutdown:boolean",
+
+    "max.num.retries": "5",
+    "retry.backoff.ms": "1000"
+  }
+}
+

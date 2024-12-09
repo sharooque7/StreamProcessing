@@ -1,12 +1,14 @@
 package org.ainzson;
 
 import lombok.extern.slf4j.Slf4j;
-import org.ainzson.config.TDengineConfig;
-import org.ainzson.setup.GenerateShiftsForAsset;
-import org.ainzson.streamprocessor.PmsEventStream;
-import org.ainzson.streamprocessor.XMallStatefulTransaction;
+import org.ainzson.models.pms.Availability;
+import org.ainzson.streamprocessor.pms.availability.AvailabilityProcess;
+import org.ainzson.streamprocessor.pms.availability.AvailabilityStream;
+import org.ainzson.streamprocessor.pms.downtime.EventStream;
 
-import java.util.List;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Slf4j
 public class Main {
@@ -16,9 +18,10 @@ public class Main {
 //        new RuleEngineStream().TemperatureStreamProcessor();
 //        new ConditionalMonitoringProcess().conditionalMonitoringProcessor();
 //        new XMallStatefulTransaction().xMallStream();
-        new PmsEventStream().PmsEventStreaming();
-
+//        new EventStream().PmsEventStreaming();
+        new AvailabilityStream().AvailabilityStreamProcess();
 //        new GenerateShiftsForAsset().initShit();
+
     }
 }
 

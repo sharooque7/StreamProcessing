@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import org.ainzson.utils.Mapper;
+import org.ainzson.utils.RedisUtils;
 import redis.clients.jedis.Jedis;
 import lombok.extern.slf4j.Slf4j;
 import org.ainzson.models.shift.Shift;
@@ -19,9 +20,13 @@ import org.ainzson.models.shift.PlannedDowntime;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import static io.lettuce.core.models.command.CommandDetail.Flag.RANDOM;
+
 @Slf4j
 public class GenerateShiftsForAsset {
-    
+    private static final Random RANDOM = new Random();
+    private static final String[] SHIFT_NAMES = {"Shift A", "Shift B", "Shift C"};
+
     public List<String> getAssetList(Connection conn) {
         List<String> assetList = new ArrayList<>();
         try {
@@ -37,28 +42,29 @@ public class GenerateShiftsForAsset {
     }
 
     public static void processShift(Jedis redis, String asset)  {
-        ZoneId indiaZone = ZoneId.of("Asia/Kolkata");
-        ZonedDateTime currentTime = ZonedDateTime.now(indiaZone).withZoneSameInstant(ZoneOffset.UTC);
-
-        ZonedDateTime shiftStart = currentTime.withSecond(0).withNano(0);
-        ZonedDateTime shiftEnd = shiftStart.plusMinutes(15);
-
-        Shift shift = getShift(shiftStart, shiftEnd);
-
         try {
-            ObjectMapper mapper = Mapper.getObjectMapper();
-            String shiftJson = mapper.writeValueAsString(shift);
+            ZoneId indiaZone = ZoneId.of("Asia/Kolkata");
+            ZonedDateTime currentTime = ZonedDateTime.now(indiaZone).withZoneSameInstant(ZoneOffset.UTC);
 
-            redis.hset("shift", asset, shiftJson);
-        }
-        catch (JsonProcessingException exception) {
-            log.error("Error processing shift for asset {}: {}", asset, exception.getMessage());
-        }
+            ZonedDateTime shiftStart = currentTime.withSecond(0).withNano(0);
+            ZonedDateTime shiftEnd = shiftStart.plusMinutes(15);
 
-        System.out.println(currentTime);
+            Shift shift = getShift(shiftStart, shiftEnd);
+
+            String shiftInfo = RedisUtils.serializeToString(shift);
+
+            redis.hset("shift", asset, shiftInfo);
+
+            log.info("Created Shift for {}:{}" ,asset,shiftInfo);
+
+        }
+        catch (Exception exception) {
+            log.error("Something went wrong in shift creation {}",exception.getLocalizedMessage());
+        }
     }
 
     private static Shift getShift(ZonedDateTime shiftStart, ZonedDateTime shiftEnd) {
+
         ZonedDateTime downtime1Start = shiftStart.plusMinutes(2);
         ZonedDateTime downtime1End = downtime1Start.plusMinutes(2);
 
@@ -73,7 +79,12 @@ public class GenerateShiftsForAsset {
         ZonedDateTime holidayEnd = holidayStart.plusMinutes(2);
 
         Shift shift = new Shift();
-        shift.setName("Shift A");
+        String shiftName = SHIFT_NAMES[RANDOM.nextInt(SHIFT_NAMES.length)];
+        shift.setName(shiftName);
+
+        String shiftId = "S" + (RANDOM.nextInt(900) + 100); // Random number between 100 and 999
+        shift.setShiftId(shiftId);
+
         shift.setStartTime(shiftStart);
         shift.setEndTime(shiftEnd);
         shift.setPlannedDowntime(List.of(new PlannedDowntime("BRK1", "First Downtime", downtime1Start, downtime1End),
@@ -112,7 +123,7 @@ public class GenerateShiftsForAsset {
     }
 
 
-    public void initShit() {
+    public void initShit()  {
         Jedis redis_conn = new RedisConfig().getJedis();
         Connection connection = TDengineConfig.getConnection();
 

@@ -17,7 +17,6 @@ public class Tags {
     private String tenant;
     private String site;
     private String subtenant;
-    private String cell;
     private String department;
 
     @Override
@@ -27,7 +26,6 @@ public class Tags {
                 ", tenant='" + tenant + '\'' +
                 ", site='" + site + '\'' +
                 ", subtenant='" + subtenant + '\'' +
-                ", cell='" + cell + '\'' +
                 ", department='" + department + '\'' +
                 '}';
     }

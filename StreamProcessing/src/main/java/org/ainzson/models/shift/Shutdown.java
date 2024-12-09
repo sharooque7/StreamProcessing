@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Shutdown {
+public class Shutdown implements PlannedEvent {
     private String id;
     private String name;
     private ZonedDateTime startTime;

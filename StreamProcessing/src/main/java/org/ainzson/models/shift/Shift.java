@@ -19,6 +19,7 @@ public class Shift {
     private List<PlannedDowntime> plannedDowntime;
     private List<Shutdown> plannedShutdown;
     private List<Holiday> holidays;
+    private String shiftId;
 
     @Override
     public String toString() {

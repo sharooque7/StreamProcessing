@@ -1,9 +1,11 @@
-package org.ainzson.streamprocessor;
+package org.ainzson.streamprocessor.pms.downtime;
 
-import ch.qos.logback.core.joran.conditional.ThenAction;
 import lombok.extern.slf4j.Slf4j;
 import org.ainzson.Serdes.JsonSerdes;
+import org.ainzson.config.RedisConfig;
+import org.ainzson.models.pms.Downtime;
 import org.ainzson.models.pms.MachineStatus;
+import org.ainzson.streamprocessor.pms.utils.ShiftUtilities;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.serialization.Serdes;
@@ -13,17 +15,17 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Printed;
+import org.apache.kafka.streams.kstream.Produced;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
-import static org.apache.kafka.streams.kstream.Printed.toSysOut;
-
 @Slf4j
-public class PmsEventStream {
+public class EventStream {
     private final static String BOOTSTRAP_SERVER = "127.0.0.1:9092";
     private final static String APP_ID = "PMS_EVENT";
     private final static String SOURCE_TOPIC = "_normalized_normalized_pms";
@@ -38,6 +40,7 @@ public class PmsEventStream {
 
         return  properties;
     }
+
 
     public void PmsEventStreaming() {
         try {
@@ -57,7 +60,7 @@ public class PmsEventStream {
                 latch.await();
             }
             catch (KafkaException kafkaException) {
-                log.error("kafkaException in stream {}",kafkaException.getLocalizedMessage());
+                log.error("kafkaException in pms event stream {}",kafkaException.getLocalizedMessage());
             }
             catch (Throwable e) {
                 System.exit(1);
@@ -73,21 +76,25 @@ public class PmsEventStream {
     private Topology getTopology() {
         final StreamsBuilder builder = new StreamsBuilder();
 
+        ShiftUtilities shiftUtilities = new ShiftUtilities();
+        RedisConfig redisConfig = new RedisConfig();
+        Map<String,Downtime> downtimes = new HashMap<>();
+        EventChangeCapture eventChangeCapture = new EventChangeCapture();
+
         KStream<String,MachineStatus> ks0 = builder.stream("_normalized_normalized_pms", Consumed.with(Serdes.String(), JsonSerdes.MachineStatusSerde())
                 .withName("Event_PMS_Stream")
                 .withOffsetResetPolicy(Topology.AutoOffsetReset.LATEST));
 
+        ks0.print(Printed.<String, MachineStatus>toSysOut().withLabel("attack"));
 
 
+        EventChangeProcess eventChangeProcess = new EventChangeProcess(eventChangeCapture, shiftUtilities, redisConfig, downtimes);
 
+        KStream<String, Downtime> processedStream = ks0.mapValues(eventChangeProcess::process);
 
-//        ks0.print(Printed.<String,MachineStatus>toSysOut().withLabel("Printing"));
-//        ks0.foreach((key,value) -> System.out.println(value.toString()));
-
-        ks0.foreach((key,value) -> log.info(value.toString()));
+        processedStream.to("events", Produced.with(Serdes.String(), JsonSerdes.DowntimeStatusSerde()));
 
         return builder.build();
     }
-
 
 }
