@@ -12,6 +12,7 @@
         <module>StreamProcessing</module>
         <module>Stimulator</module>
         <module>Practice</module>
+        <module>Interview</module>
     </modules>
 
     <properties>

@@ -2,6 +2,8 @@ package org.ainzson.config;
 
 import com.taosdata.jdbc.TSDBDriver;
 import com.taosdata.jdbc.ws.TSWSPreparedStatement;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.ainzson.Sensors.Vibration;
 
@@ -13,7 +15,33 @@ import java.util.Properties;
 
 @Slf4j
 public class TDengineConnector {
-    private static final String JDBC_URL = "jdbc:TAOS-RS://localhost:6041/?user=root&password=taosdata&batchfetch=true";
+
+//    private static final String JDBC_URL = "jdbc:TAOS-RS://localhost:6041/?batchfetch=true";
+    private static final String JDBC_URL = "jdbc:TAOS://localhost:6030/?batchfetch=true";
+
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "taosdata";
+    private static final HikariDataSource dataSource;
+
+    HikariConfig config = new HikariConfig();
+
+    static {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(JDBC_URL);
+        config.setUsername(DB_USER);
+        config.setPassword(DB_PASSWORD);
+
+        // Connection Pool Optimizations
+        config.setMinimumIdle(2);            // Maintain at least 2 idle connections
+        config.setMaximumPoolSize(50);        // Limit total connections to 5
+        config.setConnectionTimeout(10000);  // Wait max 10 sec for a connection
+        config.setMaxLifetime(300000);       // Recycle connections every 5 mins
+        config.setIdleTimeout(60000);        // Close idle connections after 1 min
+        config.setConnectionTestQuery("SELECT SERVER_STATUS()");
+
+        dataSource = new HikariDataSource(config);
+    }
+
     // Common properties for the connection
     private static Properties getConnectionProperties() {
         Properties connProps = new Properties();
@@ -26,11 +54,18 @@ public class TDengineConnector {
     // Method to establish and return a connection
     public static Connection getConnection() {
         try {
-            return DriverManager.getConnection(JDBC_URL, getConnectionProperties());
+            return dataSource.getConnection();
+
+//            return DriverManager.getConnection(JDBC_URL, getConnectionProperties());
         }
         catch (SQLException sqlException) {
             log.error("Failed to connect to the database: {}, Error Message: {}", JDBC_URL, sqlException.getMessage());
             throw  new RuntimeException(sqlException);
+        }
+    }
+    public static void closePool() {
+        if (dataSource != null) {
+            dataSource.close();
         }
     }
 }

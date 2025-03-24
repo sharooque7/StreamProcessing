@@ -2,18 +2,17 @@ package org.ainzson.stimulator;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.taosdata.jdbc.ws.TSWSPreparedStatement;
+import com.taosdata.jdbc.TSDBPreparedStatement;
 import lombok.extern.slf4j.Slf4j;
-import org.ainzson.Sensors.Pressure;
 import org.ainzson.Stimulator;
 import org.ainzson.config.TDengineConnector;
 import org.ainzson.model.MachineStatus;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +36,9 @@ public class PmsStimulator {
 
     public PmsStimulator() {
         for (int i = 0; i < NUMBER_OF_ASSET; i++) {
-            machineStatuses.add(new MachineStatus(ListAsset[i], "TNT06090533644d3bb08","SIT063707182c94268b5","BSN12113925478a40f2b","DEP122338230328c31ec","CEL122717164f8a37e96"));
+                machineStatuses.add(new MachineStatus(ListAsset[i], "TNT06090533644d3bb08","SIT063707182c94268b5","BSN12113925478a40f2b","DEP1058129890195b119","CEL122717164f8a37e96"));
         }
-        this.executor = Executors.newScheduledThreadPool(1); // Configure as needed
+        this.executor = Executors.newScheduledThreadPool(10); // Configure as needed
     }
 
     private static String[] loadAsset() {
@@ -55,7 +54,7 @@ public class PmsStimulator {
     }
 
 
-    private void setTags(TSWSPreparedStatement preparedStatement, MachineStatus machineStatus) throws SQLException {
+    private void setTags(TSDBPreparedStatement preparedStatement, MachineStatus machineStatus) throws SQLException {
         preparedStatement.setTagString(1, machineStatus.getTags().getAsset());
         preparedStatement.setTagString(2, machineStatus.getTags().getTenant());
         preparedStatement.setTagString(3, machineStatus.getTags().getSite());
@@ -64,7 +63,7 @@ public class PmsStimulator {
         preparedStatement.setTagString(6, machineStatus.getTags().getDepartment());
     }
 
-    private void setValues(TSWSPreparedStatement preparedStatement, MachineStatus machineStatus) throws SQLException {
+    private void setValues(TSDBPreparedStatement preparedStatement, MachineStatus machineStatus) throws SQLException {
         preparedStatement.setTimestamp(7, Timestamp.valueOf(machineStatus.getTs())); // Timestamp
         preparedStatement.setTimestamp(8, Timestamp.valueOf(machineStatus.getTs_act())); // Timestamp
         preparedStatement.setInt(9, machineStatus.getStatus());
@@ -82,7 +81,11 @@ public class PmsStimulator {
     private void executeInsert(Connection connection, String subTable, MachineStatus machineStatus) throws SQLException {
         String sql = "INSERT INTO " + subTable + " USING " + "normalized.normalized_pms" + " TAGS(?, ?, ?, ?, ?, ?) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (TSWSPreparedStatement preparedStatement = connection.prepareStatement(sql).unwrap(TSWSPreparedStatement.class)) {
+
+////        Statement statement = connection.createStatement();
+//        statement.executeQuery("USE normalized");
+//        statement.executeQuery(sql);
+        try (TSDBPreparedStatement preparedStatement = connection.prepareStatement(sql).unwrap(TSDBPreparedStatement.class)) {
             // Set tags and values
             preparedStatement.execute("USE normalized");
             setTags(preparedStatement, machineStatus);
@@ -104,7 +107,7 @@ public class PmsStimulator {
 
     public void stimulator() {
         long initialDelay = 0;
-        long period = 1; // Run every 1 minute
+        long period = 5; // Run every 1 minute
 
         executor.scheduleAtFixedRate(() -> {
             try {
@@ -112,11 +115,13 @@ public class PmsStimulator {
                     machineStatus.generateRandomData();  // Generate random data
                     log.info("Generated data: {}", machineStatus); // Use logger instead of System.out.println
                     push(machineStatus); // Push data to the database
+//                    break;
+
                 }
             } catch (Exception e) {
                 log.error("Error during data generation and insertion: {}", e.getMessage(), e);
             }
-        }, initialDelay, period, TimeUnit.MINUTES);
+        }, initialDelay, period, TimeUnit.SECONDS);
     }
 
     public void shutdown() {
@@ -132,4 +137,6 @@ public class PmsStimulator {
             Thread.currentThread().interrupt();
         }
     }
+
+
 }

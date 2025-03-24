@@ -17,6 +17,8 @@ public class Tags {
 
     @JsonProperty("asset")
     private String asset;
+    @JsonProperty("subsystem")
+    private String subSystem;
     @JsonProperty("tenant")
     private String tenant;
     @JsonProperty("site")

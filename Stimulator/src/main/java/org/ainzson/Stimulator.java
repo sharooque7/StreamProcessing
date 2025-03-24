@@ -1,12 +1,9 @@
 package org.ainzson;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+//import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ainzson.ringframe.RingFrameStimulator;
-import org.ainzson.stimulator.PmsStimulator;
-import org.ainzson.stimulator.PressureStimulator;
-import org.ainzson.stimulator.TemperatureStimulator;
-import org.ainzson.stimulator.VibrationStimulator;
+import org.ainzson.stimulator.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,5 +22,6 @@ public class Stimulator {
 //        new TemperatureStimulator().stimulator();
 //        new VibrationStimulator().stimulator();
         new PmsStimulator().stimulator();
+//        new MotorProducer().produce();
     }
 }

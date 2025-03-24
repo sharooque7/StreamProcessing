@@ -19,7 +19,7 @@ public class Main {
 //        new ConditionalMonitoringProcess().conditionalMonitoringProcessor();
 //        new XMallStatefulTransaction().xMallStream();
 //        new EventStream().PmsEventStreaming();
-        new AvailabilityStream().AvailabilityStreamProcess();
+//        new AvailabilityStream().AvailabilityStreamProcess();
 //        new GenerateShiftsForAsset().initShit();
 
     }

@@ -104,6 +104,8 @@ public class Availability {
     @JsonIgnore
     private int stoppedTimeCount;
 
+    public Availability calculate() {return  this;}
+
 
     public Availability process(MachineStatus machineStatus) {
 
@@ -153,6 +155,7 @@ public class Availability {
         Shift shiftInfo = shiftUtilities.decodeShift(machineStatus,redisConfig,downtimes);
         List<PlannedDowntime> plannedDowntimes = shiftInfo.getPlannedDowntime();
         List<Shutdown> plannedShutdown = shiftInfo.getPlannedShutdown();
+
         availability.setPlannedDowntime(shiftUtilities.isInDowntimeOrShutdown(Instant.ofEpochMilli(start),plannedDowntimes));
         availability.setPlannedShutdown(shiftUtilities.isInDowntimeOrShutdown(Instant.ofEpochMilli(start),plannedShutdown));
 

@@ -1,5 +1,6 @@
 package org.ainzson.model;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -54,7 +55,7 @@ public class MachineStatus {
     private int  feedRateOverride;
 
     public MachineStatus(String asset, String tenant, String site, String subtenant, String department, String cell) {
-        this.setTags(new Tags(asset, tenant, site, subtenant, cell,department));
+        this.setTags(new Tags(asset,"ss", tenant, site, subtenant, cell,department));
     }
 
     public void generateRandomData() {

@@ -42,7 +42,6 @@ public class PressureStimulator {
         preparedStatement.setDouble(6, pressure.getAbsolute_pressure());                // Humidity
         preparedStatement.setDouble(7, pressure.getDifferential_pressure());               // Dew Point
         preparedStatement.setDouble(8, pressure.getTemperature());               // Dew Point
-
     }
 
     private void executeInsert(Connection connection, String subTable, String superTable, Pressure pressure) throws SQLException {
