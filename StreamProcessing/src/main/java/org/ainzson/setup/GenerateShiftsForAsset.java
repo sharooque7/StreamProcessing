@@ -25,7 +25,7 @@ import static io.lettuce.core.models.command.CommandDetail.Flag.RANDOM;
 
 @Slf4j
 public class GenerateShiftsForAsset {
-    LocalDateTime
+//    LocalDateTime
     private static final Random RANDOM = new Random();
     private static final String[] SHIFT_NAMES = {"Shift A", "Shift B", "Shift C"};
 

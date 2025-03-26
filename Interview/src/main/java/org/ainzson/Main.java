@@ -1,6 +1,12 @@
 package org.ainzson;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ainzson.oops.collections.iterator.PrimeNumber;
+import org.ainzson.oops.collections.lists.Task;
+import org.ainzson.oops.collections.lists.TaskManager;
+import org.ainzson.oops.collections.queue.Customer;
+import org.ainzson.oops.collections.queue.MessageQueue;
+import org.ainzson.oops.collections.queue.RateLimiter;
 import org.ainzson.oops.io.inputstream.*;
 import org.ainzson.oops.statics.Child;
 import org.ainzson.oops.statics.Parent;
@@ -8,12 +14,14 @@ import org.ainzson.oops.statics.Parent;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.Iterator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 //        Custom Annotations
 //            AnnotationExecutor.annotationProcessor(new Main());
 
@@ -66,15 +74,50 @@ public class Main {
 //        SequentialLogMerger sequentialLogMerger = new SequentialLogMerger();
 //        sequentialLogMerger.mergeLogs();
 
-        Parent parent = new Child();
-        Child child = new Child();
-        Parent p = new Child();
-        parent.displayStatic();
-        p.displayStatic();
-        child.displayStatic();
-        parent.display();
+//        Parent parent = new Child();
+//        Child child = new Child();
+//        Parent p = new Child();
+//        parent.displayStatic();
+//        p.displayStatic();
+//        child.displayStatic();
+//        parent.display();
 
+//        PrimeNumber primeNumber = new PrimeNumber(1,2,3,4,5,6);
+//        Iterator<Integer> iterator = primeNumber.iterator();
+//
+//        while (iterator.hasNext()) {
+//            iterator.next();
+//        }
+//        primeNumber.displayPrimes();
 
+//        TaskManager manager = new TaskManager();
+//        manager.addTask(new Task("Complete Java Project", 1));
+//        manager.addTask(new Task("Review PRs", 3));
+//        manager.addTask(new Task("Write Documentation", 2));
+//
+//        manager.viewTasks();
+//        manager.completedTask("Review PRs");
+//        manager.viewCompletedTasks();
+
+//        PriorityQueue<Customer> queue = new PriorityQueue<>();
+//        queue.offer(new Customer("Alice", 2));  // Normal user
+//        queue.offer(new Customer("Bob", 1));    // VIP user
+//        queue.offer(new Customer("Charlie", 3)); // Normal use
+//        while (!queue.isEmpty()) {
+//            System.out.println(queue.poll().getName()); // VIPs served first
+//        }
+
+//        RateLimiter rateLimiter = new RateLimiter(5, 1000); // 5 requests per second
+//        String user = "user123";
+//
+//        for (int i = 1; i <= 100; i++) {
+//            boolean allowed = rateLimiter.allowRequest(user);
+//            System.out.println("Request " + i + " allowed: " + allowed);
+//            Thread.sleep(200); // Simulate time gap between requests
+//        }
+
+        MessageQueue messageQueue = new MessageQueue();
+        messageQueue.start();
 
     }
 
