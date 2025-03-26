@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ainzson.oops.collections.iterator.PrimeNumber;
 import org.ainzson.oops.collections.lists.Task;
 import org.ainzson.oops.collections.lists.TaskManager;
-import org.ainzson.oops.collections.queue.Customer;
-import org.ainzson.oops.collections.queue.MessageQueue;
-import org.ainzson.oops.collections.queue.RateLimiter;
+import org.ainzson.oops.collections.queue.*;
 import org.ainzson.oops.io.inputstream.*;
 import org.ainzson.oops.statics.Child;
 import org.ainzson.oops.statics.Parent;
@@ -115,9 +113,46 @@ public class Main {
 //            System.out.println("Request " + i + " allowed: " + allowed);
 //            Thread.sleep(200); // Simulate time gap between requests
 //        }
+//
+//        MessageQueue messageQueue = new MessageQueue();
+//        messageQueue.start();
 
-        MessageQueue messageQueue = new MessageQueue();
-        messageQueue.start();
+//        UndoRedoManager undoRedoManager = new UndoRedoManager();
+//        undoRedoManager.performAction("Type Hello");
+//        undoRedoManager.performAction("Type World");
+//        undoRedoManager.performAction("Delete World");
+//
+//        undoRedoManager.undo();
+//        undoRedoManager.undo();
+//        undoRedoManager.redoAction();
+
+//        LRUCache<Integer, String> lru = new LRUCache<>(3);
+//
+//        lru.put(1, "A");
+//        lru.put(2, "B");
+//        lru.put(3, "C");
+//        lru.displayCache();
+//
+//        lru.get(1);
+//        lru.put(4, "D");
+//        lru.displayCache();
+//
+//        lru.put(5, "E");
+//        lru.displayCache();
+
+        LRUCacheLinkedHashMap<Integer, String> cache = new LRUCacheLinkedHashMap<>(3);
+
+        cache.put(1, "A");
+        cache.put(2, "B");
+        cache.put(3, "C");
+        System.out.println(cache); // {1=A, 2=B, 3=C}
+
+        cache.get(1); // Access 1, moves to most recently used
+        cache.put(4, "D"); // Removes LRU (2)
+        System.out.println(cache); // {3=C, 1=A, 4=D}
+
+        cache.put(5, "E"); // Removes LRU (3)
+        System.out.println(cache); // {1=A, 4=D, 5=E}
 
     }
 
