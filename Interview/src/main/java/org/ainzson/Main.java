@@ -1,10 +1,15 @@
 package org.ainzson;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ainzson.oops.Test;
 import org.ainzson.oops.collections.iterator.PrimeNumber;
 import org.ainzson.oops.collections.lists.Task;
 import org.ainzson.oops.collections.lists.TaskManager;
 import org.ainzson.oops.collections.queue.*;
+import org.ainzson.oops.enums.Day;
+import org.ainzson.oops.generics.Pipeline;
+import org.ainzson.oops.generics.transform.TransformationStage;
+import org.ainzson.oops.generics.validations.ValidationStage;
 import org.ainzson.oops.io.inputstream.*;
 import org.ainzson.oops.statics.Child;
 import org.ainzson.oops.statics.Parent;
@@ -12,9 +17,7 @@ import org.ainzson.oops.statics.Parent;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.Iterator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 
 public class Main {
@@ -37,7 +40,6 @@ public class Main {
 //        Diamond Problem
 //        Diamond diamond = new Diamond();
 //        diamond.display();
-
 
 
 //        Log Management
@@ -140,22 +142,37 @@ public class Main {
 //        lru.put(5, "E");
 //        lru.displayCache();
 
-        LRUCacheLinkedHashMap<Integer, String> cache = new LRUCacheLinkedHashMap<>(3);
+//        LRUCacheLinkedHashMap<Integer, String> cache = new LRUCacheLinkedHashMap<>(3);
+//
+//        Object o = new Object();
+//        cache.put(1, "A");
+//        cache.put(2, "B");
+//        cache.put(3, "C");
+//        System.out.println(cache); // {1=A, 2=B, 3=C}
+//
+//        cache.get(1); // Access 1, moves to most recently used
+//        cache.put(4, "D"); // Removes LRU (2)
+//        System.out.println(cache); // {3=C, 1=A, 4=D}
+//
+//        cache.put(5, "E"); // Removes LRU (3)
+//        System.out.println(cache); // {1=A, 4=D, 5=E}
 
-        cache.put(1, "A");
-        cache.put(2, "B");
-        cache.put(3, "C");
-        System.out.println(cache); // {1=A, 2=B, 3=C}
-
-        cache.get(1); // Access 1, moves to most recently used
-        cache.put(4, "D"); // Removes LRU (2)
-        System.out.println(cache); // {3=C, 1=A, 4=D}
-
-        cache.put(5, "E"); // Removes LRU (3)
-        System.out.println(cache); // {1=A, 4=D, 5=E}
-
-    }
-
+//        System.out.println(Day.SUNDAY);
+//        for(Day day: Day.values()) {
+//            System.out.println(day);
+//        }
+//
+//        Day s1 = Day.SUNDAY;
+//        Day s2 = Day.MONDAY;
+//
+//        System.out.println(s1==s2);
+//
+//        Pipeline<String> stringPipeline = new Pipeline<>();
+//        stringPipeline
+//                .addStage(new ValidationStage<>())
+//                .addStage(new TransformationStage());
+//        String result = stringPipeline.execute("hello generics");
+//        System.out.println("Processed Output: "+ result);
 
 
 //    @LogExecutionAnnotation("notify")
@@ -163,7 +180,7 @@ public class Main {
 //        Thread.sleep(1000);
 //    }
 
-
+    }
 
 }
 
