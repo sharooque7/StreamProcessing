@@ -15,7 +15,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -23,21 +25,24 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class PmsStimulator {
 
-    private final List<MachineStatus> machineStatuses = new ArrayList<>();
+    private static final List<MachineStatus> machineStatuses = new ArrayList<>();
     private final String superTable = "normalized_pms";
 
     private static final String[] ListAsset ;
 
     static  {
         ListAsset = loadAsset();
+        for (int i = 0; i < ListAsset.length; i++) {
+            machineStatuses.add(new MachineStatus(ListAsset[i], "TNT06090533644d3bb08","SIT063707182c94268b5","BSN12113925478a40f2b","DEP1058129890195b119","CEL122717164f8a37e96"));
+        }
     }
     private final int NUMBER_OF_ASSET = ListAsset.length;
     private final ScheduledExecutorService executor;
 
     public PmsStimulator() {
-        for (int i = 0; i < NUMBER_OF_ASSET; i++) {
-                machineStatuses.add(new MachineStatus(ListAsset[i], "TNT06090533644d3bb08","SIT063707182c94268b5","BSN12113925478a40f2b","DEP1058129890195b119","CEL122717164f8a37e96"));
-        }
+//        for (int i = 0; i < NUMBER_OF_ASSET; i++) {
+//                machineStatuses.add(new MachineStatus(ListAsset[i], "TNT06090533644d3bb08","SIT063707182c94268b5","BSN12113925478a40f2b","DEP1058129890195b119","CEL122717164f8a37e96"));
+//        }
         this.executor = Executors.newScheduledThreadPool(10); // Configure as needed
     }
 
@@ -55,6 +60,7 @@ public class PmsStimulator {
 
 
     private void setTags(TSDBPreparedStatement preparedStatement, MachineStatus machineStatus) throws SQLException {
+
         preparedStatement.setTagString(1, machineStatus.getTags().getAsset());
         preparedStatement.setTagString(2, machineStatus.getTags().getTenant());
         preparedStatement.setTagString(3, machineStatus.getTags().getSite());
@@ -79,20 +85,27 @@ public class PmsStimulator {
     }
 
     private void executeInsert(Connection connection, String subTable, MachineStatus machineStatus) throws SQLException {
-        String sql = "INSERT INTO " + subTable + " USING " + "normalized.normalized_pms" + " TAGS(?, ?, ?, ?, ?, ?) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO " + subTable + " USING " + "normalzied.normalized_pms" + " TAGS(?, ?, ?, ?, ?, ?) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-
-////        Statement statement = connection.createStatement();
+//        Statement statement = connection.createStatement();
 //        statement.executeQuery("USE normalized");
 //        statement.executeQuery(sql);
         try (TSDBPreparedStatement preparedStatement = connection.prepareStatement(sql).unwrap(TSDBPreparedStatement.class)) {
             // Set tags and values
-            preparedStatement.execute("USE normalized");
+            preparedStatement.execute("USE normalzied");
+
+
             setTags(preparedStatement, machineStatus);
             setValues(preparedStatement, machineStatus);
 
             preparedStatement.execute();
-            log.info("Data inserted successfully into sub-tables: {}", subTable);
+
+            log.info("Data inserted successfully into sub-tables: {}", machineStatus.toString());
+
+        }
+        catch (SQLException sqlException) {
+            log.error("Error executing insert statement: {} - SQL State: {}", sqlException.getLocalizedMessage(), sqlException.getSQLState());
+            throw new RuntimeException(sqlException);
         }
     }
 
@@ -112,12 +125,12 @@ public class PmsStimulator {
         executor.scheduleAtFixedRate(() -> {
             try {
                 for (MachineStatus machineStatus : machineStatuses) {
-                    machineStatus.generateRandomData();  // Generate random data
-                    log.info("Generated data: {}", machineStatus); // Use logger instead of System.out.println
+                    machineStatus.generateRandomData();  // Generate randomlog.info("Generated data: {}", machineStatus); // Use logger instead of System.out.println
                     push(machineStatus); // Push data to the database
 //                    break;
 
                 }
+
             } catch (Exception e) {
                 log.error("Error during data generation and insertion: {}", e.getMessage(), e);
             }

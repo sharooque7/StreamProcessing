@@ -21,7 +21,7 @@ public class Stimulator {
 //        new PressureStimulator().stimulator();
 //        new TemperatureStimulator().stimulator();
 //        new VibrationStimulator().stimulator();
-//        new PmsStimulator().stimulator();
-        new MotorProducer().produce();
+        new PmsStimulator().stimulator();
+//        new MotorProducer().produce();
     }
 }

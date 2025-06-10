@@ -10,9 +10,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 @Slf4j
 public class MotorProducer {
@@ -33,7 +31,10 @@ public class MotorProducer {
         new Thread(() -> produceData(YMOTOR_TEMPERATURE)).start();
     }
 
+
+
     private static void produceData(String topic) {
+
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,BOOTSTRAP_SERVER);
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -69,7 +70,6 @@ public class MotorProducer {
             put("ts_act",timestamp);
             put(topic,motorCurrent);
             put("tags", tags);
-
         }};
 
 //        MotorData motorData = new MotorData(timestamp,topic,motorCurrent, tags);

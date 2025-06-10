@@ -13,6 +13,7 @@
         <module>Stimulator</module>
         <module>Practice</module>
         <module>Interview</module>
+        <module>LLD</module>
     </modules>
 
     <properties>

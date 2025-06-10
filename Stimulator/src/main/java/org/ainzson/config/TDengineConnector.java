@@ -70,7 +70,6 @@ public class TDengineConnector {
     }
 }
 
-
 //private void setTags(TSWSPreparedStatement preparedStatement, Vibration vibration) throws SQLException {
 //    log.info("Asset"+vibration.getTags().getAssetId());
 //    preparedStatement.setTagString(1, vibration.getTags().getAssetId());
